@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/driver")
 public class DriverController {
-	
+
+	private DriverController customerService;
+
 	@PostMapping(value = "/register")
 	public ResponseEntity<Void> registerDriver(@RequestParam String mobile, @RequestParam String password){
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -24,19 +26,21 @@ public class DriverController {
 
 	@PostMapping("/bookTrip")
 	public ResponseEntity<Integer> bookTrip(@RequestParam Integer customerId, @RequestParam String fromLocation, @RequestParam String toLocation, @RequestParam Integer distanceInKm) throws Exception {
-		TripBooking bookedTrip=customerService.bookTrip(customerId,fromLocation,toLocation,distanceInKm);
+		ResponseEntity<Integer> bookedTrip=customerService.bookTrip(customerId,fromLocation,toLocation,distanceInKm);
 
-		return new ResponseEntity<>(bookedTrip.getTripBookingId(), HttpStatus.CREATED);
+		return new ResponseEntity<>(bookedTrip.getBody(), HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/complete")
 	public void completeTrip(@RequestParam Integer tripId){
+		DriverController customerService = null;
 		customerService.deleteCustomer(tripId);
 	}
 
 	@DeleteMapping("/cancelTrip")
 	public void cancelTrip(@RequestParam Integer tripId){
 
+		DriverController customerService = new DriverController();
 		customerService.cancelTrip(tripId);
 	}
 }
